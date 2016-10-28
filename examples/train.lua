@@ -5,19 +5,20 @@
 
 require 'paths'
 require 'torch'
-paths.dofile('../code/projectdir.lua')
-local fastrcnn = paths.dofile(paths.concat(projectDir,'init.lua')) -- load fastrcnn package
---local fastrcnn = require 'fastrcnn' -- load fastrcnn package
+--local fastrcnn = require 'fastrcnn'
+paths.dofile('projectdir.lua')
+local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
 
 torch.setdefaulttensortype('torch.FloatTensor')
+
 
 --------------------------------------------------------------------------------
 -- Load options
 --------------------------------------------------------------------------------
 
 print('==> (1/5) Load options')
-local opts = paths.dofile(paths.concat(projectDir, 'code', 'options.lua'))
-local opt = opts.parse(arg)
+paths.dofile('projectdir.lua')
+local opt = fastrcnn.options.parse(arg)
 
 
 --------------------------------------------------------------------------------
@@ -27,7 +28,7 @@ local opt = opts.parse(arg)
 print('==> (2/5) Load dataset')
 local dbclt = require 'dbcollection'
 local dataset, train_rois_file, test_rois_file
-local loadRoiDataFn = fastrcnn.utils.data.loadmatlab.loadSingleFile
+local loadRoiDataFn = fastrcnn.utils.loadmatlab.loadSingleFile
 if opt.dataset == 'pascalvoc2007' then
     dataset = dbclt.get{name = 'pascalvoc2007', verbose = true, category = 'full', task = 'detection', verbose = opt.verbose}
     train_rois_file = paths.concat(projectDir, 'data','proposals', 'selective_search_data', 'voc_2007_trainval.mat')
@@ -56,14 +57,20 @@ local rois = {
 
 
 --------------------------------------------------------------------------------
--- Create model
+-- Setup model
 --------------------------------------------------------------------------------
 
-print('==> (4/5) Load model:')
-print('Load featuresNet')
-local featuresNet, model_parameters = fastrcnn.utils.model.setup.LoadFeatures(opt.netType, paths.concat(projectDir, 'data/pretrained_models'))
-print('Setup network')
-local model = fastrcnn.utils.model.setup.CreateModel(featuresNet, model_parameters, #dataset.data.train.classLabel, opt)
+local model, model_parameters
+if opt.loadModel == '' then
+    print('==> (4/5) Setup model:')
+    opt.nClasses = #dataset.data.train.classID
+    local models = paths.dofile('../models/init.lua')-- require 'models'
+    local netType = models.parse(opt.netType)
+    model, model_parameters = models[netType](opt, fastrcnn.utils) 
+else
+    print('==> (4/5) Load model from file: ' )
+    model = torch.load('')
+end
 
 
 --------------------------------------------------------------------------------
