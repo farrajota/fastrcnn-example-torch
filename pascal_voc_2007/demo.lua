@@ -28,6 +28,7 @@ local fname = paths.concat(opt.savedir, opt.load)
 print('==> (2/6) Load model: ' .. fname)
 local model, model_parameters = unpack(torch.load(fname))
 
+
 --------------------------------------------------------------------------------
 -- Setup detector class
 --------------------------------------------------------------------------------
@@ -41,8 +42,12 @@ local imdetector = fastrcnn.ImageDetector(model, model_parameters, opt) -- singl
 --------------------------------------------------------------------------------
 
 print('==> (4/6) Load test image + proposals boxes')
-local im = image.load(paths.concat(projectDir,'data/demo/test.jpg')) -- -- Loading the image
-local proposals = fastrcnn.utils.load.matlab.single_file(paths.concat(projectDir,'data/demo/proposals.mat')):float()
+local data_loader = require 'pascal_voc_2007.data'
+local loader = data_loader('test')
+
+local randIdx = torch.random(1, loader.test.size)
+local im = image.load(loader.test.getFilename(randIdx), 3, 'float')
+local proposals = rois.test[randIdx]:float()
 
 
 --------------------------------------------------------------------------------

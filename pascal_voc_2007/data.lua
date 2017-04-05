@@ -14,7 +14,7 @@ local function fetch_data_set(dbloader, set_name)
 
     -- get image file path
     loader.getFilename = function(idx)
-        return return ascii2str(dbloader:get(set_name, 'image_filenames', idx))[1]
+        return ascii2str(dbloader:get(set_name, 'image_filenames', idx))[1]
     end
 
     -- get image ground truth boxes + class labels
