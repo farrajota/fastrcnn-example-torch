@@ -133,16 +133,16 @@ end
 local model = createZeiler(filename_weights, 'cudnn')
 
 -- model's parameters
-local opt = {}
-opt.mean =  {128/255,128/255,128/255}
-opt.pixel_scale = 255.0
-opt.colourspace = 'rgb'
-opt.num_feats = 256
-opt.stride = 16 --pixels
+local params = {}
+params.mean =  {128/255,128/255,128/255}
+params.pixel_scale = 255.0
+params.colourspace = 'rgb'
+params.num_feats = 256
+params.stride = 16 --pixels
 
 -- save to memory
 torch.save(paths.concat(savepath, 'model_zeilernet.t7'), model)
-torch.save(paths.concat(savepath, 'parameters_zeilernet.t7'), opt)
+torch.save(paths.concat(savepath, 'parameters_zeilernet.t7'), params)
 
 collectgarbage()
 

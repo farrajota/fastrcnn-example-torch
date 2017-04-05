@@ -77,24 +77,24 @@ if not paths.filep(filename_model200) then
 end
 
 -- model's parameters
-local opt = {}
-opt.mean = {0.485, 0.456, 0.406}
-opt.std = {0.229, 0.224, 0.225}
-opt.pixel_scale = 1.0
-opt.colourspace = 'rgb'
-opt.num_feats = 512
-opt.stride = 32 --pixels
+local params = {}
+params.mean = {0.485, 0.456, 0.406}
+params.std = {0.229, 0.224, 0.225}
+params.pixel_scale = 1.0
+params.colourspace = 'rgb'
+params.num_feats = 512
+params.stride = 32 --pixels
 
 -- save to memory
-torch.save(paths.concat(savepath, 'parameters_resnet-18.t7'), opt)
-torch.save(paths.concat(savepath, 'parameters_resnet-32.t7'), opt)
-torch.save(paths.concat(savepath, 'parameters_resnet-50.t7'), opt)
+torch.save(paths.concat(savepath, 'parameters_resnet-18.t7'), params)
+torch.save(paths.concat(savepath, 'parameters_resnet-32.t7'), params)
+torch.save(paths.concat(savepath, 'parameters_resnet-50.t7'), params)
 
-opt.num_feats = 2048
+params.num_feats = 2048
 
-torch.save(paths.concat(savepath, 'parameters_resnet-101.t7'), opt)
-torch.save(paths.concat(savepath, 'parameters_resnet-152.t7'), opt)
-torch.save(paths.concat(savepath, 'parameters_resnet-200.t7'), opt)
+torch.save(paths.concat(savepath, 'parameters_resnet-101.t7'), params)
+torch.save(paths.concat(savepath, 'parameters_resnet-152.t7'), params)
+torch.save(paths.concat(savepath, 'parameters_resnet-200.t7'), params)
 
 collectgarbage()
 

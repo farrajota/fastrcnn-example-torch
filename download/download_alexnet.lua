@@ -48,15 +48,15 @@ local command = ('mv %s %s'):format(paths.concat(savepath, 'imgnet_alexnet.t7'),
 os.execute(command)
 
 -- model's parameters
-local opt = {}
-opt.mean = {102.9801,115.9465,122.7717}
-opt.pixel_scale = 255.0
-opt.colourspace = 'bgr'
-opt.num_feats = 256
-opt.stride = 16 --pixels
+local params = {}
+params.mean = {102.9801,115.9465,122.7717}
+params.pixel_scale = 255.0
+params.colourspace = 'bgr'
+params.num_feats = 256
+params.stride = 16 --pixels
 
 -- save to memory
-torch.save(paths.concat(savepath, 'parameters_alexnet.t7'), opt)
+torch.save(paths.concat(savepath, 'parameters_alexnet.t7'), params)
 
 collectgarbage()
 

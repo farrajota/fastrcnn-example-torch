@@ -52,17 +52,17 @@ end
 
 
 -- model's parameters
-local opt = {}
-opt.mean = {128,128,128}
-opt.std = {0.0078125, 0.0078125, 0.0078125}
-opt.pixel_scale = 255.0
-opt.colourspace = 'rgb'
-opt.num_feats = 2048
-opt.stride = 37.375 --pixels
+local params = {}
+params.mean = {128,128,128}
+params.std = {0.0078125, 0.0078125, 0.0078125}
+params.pixel_scale = 255.0
+params.colourspace = 'rgb'
+params.num_feats = 2048
+params.stride = 37.375 --pixels
 
 -- save to memory
-torch.save(paths.concat(savepath, 'parameters_googlenet_inceptionv3_cudnn.t7'), opt)
-torch.save(paths.concat(savepath, 'parameters_googlenet_inceptionv3_cunn.t7'), opt)
+torch.save(paths.concat(savepath, 'parameters_googlenet_inceptionv3_cudnn.t7'), params)
+torch.save(paths.concat(savepath, 'parameters_googlenet_inceptionv3_cunn.t7'), params)
 
 collectgarbage()
 

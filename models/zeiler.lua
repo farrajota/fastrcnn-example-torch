@@ -7,15 +7,17 @@ require 'cudnn'
 require 'inn'
 
 
-local function CreateModel(opt, utils)
-  
-    assert(opt)
-    assert(utils)
-    
+local function CreateModel(nGPU, nClasses, has_bbox_regressor)
+
+    assert(nGPU)
+    assert(nClasses)
+    assert(has_bbox_regressor)
+
     -- load features + model parameters (mean/std,stride/num feats (last conv)/colorspace format)
-    local net = torch.load('../data/pretrained_models/model_zeilernet.t7')
+    local net = torch.load(paths.concat(projectDir,'data/pretrained_models/model_zeilernet.t7'))
+    local net = torch.load(paths.concat(projectDir,'data/pretrained_models/parameters_zeilernet.t7'))
     local features = net.modules[1]
-    
+
     -- setup classifier
     local classifier = nn.Sequential()
         :add(nn.Linear(256*6*6, 4096))
@@ -24,25 +26,18 @@ local function CreateModel(opt, utils)
         :add(nn.Linear(4096, 4096))
         :add(nn.ReLU(true))
         :add(nn.Dropout(0.5))
-    
+
     -- create model
     local model = nn.Sequential()
         :add(nn.ParallelTable()
-            :add(utils.model.makeDataParallel(features, opt.nGPU))
+            :add(utils.model.makeDataParallel(features, nGPU))
             :add(nn.Identity())
         )
         :add(inn.ROIPooling(6,6,1/16))
         :add(nn.View(-1):setNumInputDims(3))
         :add(classifier)
-        :add(utils.model.CreateClassifierBBoxRegressor(4096, opt.nClasses, opt.has_bbox_regressor))
-    
-    local model_parameters = {
-        colourspace = 'rgb',
-        meanstd = {mean = {0.50196078431373, 0.50196078431373, 0.50196078431373}},
-        pixel_scale = 1,
-        stride = 16
-    }
-    
+        :add(utils.model.CreateClassifierBBoxRegressor(4096, nClasses, has_bbox_regressor))
+
     return model, model_parameters
 end
 

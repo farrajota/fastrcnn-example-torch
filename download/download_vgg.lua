@@ -69,18 +69,18 @@ local model_vgg16 = loadcaffe.load(vgg_16_filename_proto, vgg_16_filename_model,
 local model_vgg19 = loadcaffe.load(vgg_19_filename_proto, vgg_19_filename_model, 'cudnn')
 
 -- model's parameters
-local opt = {}
-opt.mean = {103.939, 116.779, 123.68}
-opt.pixel_scale = 255.0
-opt.colourspace = 'bgr'
-opt.num_feats = 512
-opt.stride = 16 --pixels
+local params = {}
+params.mean = {103.939, 116.779, 123.68}
+params.pixel_scale = 255.0
+params.colourspace = 'bgr'
+params.num_feats = 512
+params.stride = 16 --pixels
 
 -- save to memory
 torch.save(paths.concat(savepath, 'model_vgg16.t7'), model_vgg16)
 torch.save(paths.concat(savepath, 'model_vgg19.t7'), model_vgg19)
-torch.save(paths.concat(savepath, 'parameters_vgg16.t7'), opt)
-torch.save(paths.concat(savepath, 'parameters_vgg19.t7'), opt)
+torch.save(paths.concat(savepath, 'parameters_vgg16.t7'), params)
+torch.save(paths.concat(savepath, 'parameters_vgg19.t7'), params)
 
 collectgarbage()
 
