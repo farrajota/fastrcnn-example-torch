@@ -1,146 +1,147 @@
-#Fast-RCNN code for torch7
+# Fast R-CNN example code
 
-[Fast-RCNN](https://github.com/rbgirshick/fast-rcnn) implementation for Torch7. This package allows to train, test and implement an object detector.
+This example code showcases the use of the Fast R-CNN package for training and testing a network.
 
 
-### Contents
-1. [Features](#features)
-1. [Requirements](#requirements)
-3. [Usage](#usage)
-3. [Fast RCNN package](#package)
-4. [Training and testing](#Model train/test)
-5. [Download dataset/pre-trained models](#Downloads)
-5. [License](#License)
-5. [Acknowledges](#acknowledges)
-
-### Features
-- Core functions wrapped in a Lua table for easier integration in a project
-- Multi-threaded data load (uses torchnet as a backend)
-- Multi-GPU support
-- Support for additional data augmentation techniques (rotation, jitter, color shifts, etc.)
-- Useful utilities like model creation, detection visualization, etc.
-
+## Installation
 
 ### Requirements
 
-- Linux (not tested on MacOS)
-- [Torch7](http://torch.ch/docs/getting-started.html)
 - NVIDIA GPU with compute capability 3.5+ (2GB+ ram)
-- At least 6GB free ram
+- [Torch7](http://torch.ch/docs/getting-started.html)
+- [Fast R-CNN module](https://github.com/farrajota/fast-rcnn-torch)
+- [dbcollection](https://github.com/farrajota/dbcollection)
 
+### Packages/dependencies installation
 
-### Installation
+To use this example code, some packages are required for it to work: `fastrcnn` and `dbcollection`.
 
-This Fast-RCNN package requires [Torch7](http://torch.ch/docs/getting-started.html) to be installed on your machine. Additionally, the following packages are required for this package to work:
+#### fastrcnn
+
+To install the Fast R-CNN package do the following:
+
+- step 1: install all the necessary dependencies.
 
 ```bash
+luarocks install tds
 luarocks install cudnn
 luarocks install inn
 luarocks install matio
 luarocks install torchnet
-(*optional*) git clone https://github.com/farrajota/dbcollection && cd dbcollection && luarocks make
 ```
 
-The last package contains scripts to easily load/download datasets using a simple API. This package allows to load the necessary datasets for the example scripts. Also, as it is an optional package, it can ignored if you are only looking for core functionalities of the package.
+- setp 2: download and install the package.
 
-### Running the demos
+```bash
+git clone https://github.com/farrajota/fast-rcnn-torch
+cd fast-rcnn-torch && luarocks make rocks/*
+```
 
-To run the basic demo code you'll first need to download/setup the pre-trained models. After this is done, just simply run the basic demo `examples/demo.lua` on the terminal:
+> For more information about the fastrcnn package see [here](https://github.com/farrajota/fast-rcnn-torch).
+
+#### dbcollection
+
+To install the dbcollection package do the following:
+
+- step 1: download the git repository to disk.
+```
+git clone https://github.com/farrajota/dbcollection
+```
+
+- step 2: install the Python module.
+```
+cd dbcollection/ && python setup.py install
+```
+
+- step 3: install the Lua package.
+```
+cd APIs/lua && luarocks make
+```
+
+> For more information about the dbcollection package see [here](https://github.com/farrajota/dbcollection).
+
+
+## Data setup
+
+### Pre-trained models
+
+Several pre-trained models are available to be used in this example code. To download these networks, simply run the following command in the terminal (assuming you are in the root dir of the repo):
+
+```bash
+th download/download_pretrained_models.lua
+```
+
+This will download the following network types pretrained on the ImageNet ILSVRC2012 dataset: alexnet, zeilernet, googlenet, vgg and resnet
+
+### RoI Proposals
+
+To download the roi proposals, simply run the following command in the terminal (again, assuming you are in the root dir of the repo):
+
+```bash
+th download/download_roi_proposals.lua
+```
+
+### Dataset
+
+To run the example code, the user can let the script handle the data download and setup.
+
+However, if the user already has downloaded the data to disk, it is advisable to manually setup the dataset before runing the script to avoid downloading the data to disk.
+
+To do this you can do the following:
+
 ```lua
-qlua demo.lua
+dbc = require 'dbcollection.manager'
+dbc.add{name='pascal_voc_2007', data_dir='path/to/dataset', task={}, file_path={}}
 ```
 
-After running the demo you should see the following detections:
+Even if you don't have the dataset, it is best to manually setup the dataset because this way you can specify the path where data will be stored on disk. Like the previous example, to setup a dataset's data you simply need to do the following:
+
+```lua
+dbc = require 'dbcollection.manager'
+dbc.load{name='pascal_voc_2007', data_dir='save/dir/path'}
+```
+
+> Note: If no path is provided, the dataset will be stored in the `~/dbcollection/pascal_voc_2007/data/` directory in your home path.
+
+
+## Train and test a model using the example code
+
+This repository contains scripts for training and testing an object detector network using a pre-trained network for feature extraction such as the alexnet or resnet on a dataset.
+
+There are several options available for configuring the training/testing parameters. See `options.lua` for a complete set of available parameters for training/testing.
+
+> Note: For now only the Pascal VOC 2007 dataset is provided. The MS COCO dataset is being prepared for inclusion as well.
+
+### Training a network
+
+To train a model,  by calling `th pascal_voc_2007/train.lua`. Also, you should specify the required options appropriately. For a list of complete options run `th pascal_voc_2007/train.lua -help`.
+
+* You can select one of the following imagenet pre-trained networks for feature extraction: AlexNet, ZeilerNet, VGG (16, 19), ResNet (19, 34, 50, 101, 152, 200), and GoogleNet v3.
+
+* Snapshots of the network's training are stored to disk other ifnromation such as the configuration file, loss logs and model parameters of the training procedure (default path is `./data/exp`). You can change this directory by passing the `-expDir`new path to save the experiment option.
+
+### Testing a network (mAP accuracy)
+
+To test an object detector accuracyrun the test script using `th test.lua` and define the `-expID`, `-dataset` and `-expDir` (if changed) to compute the mean average-precision.
+
+> Note: The test script only uses a single GPU.
+
+
+### Running the demo
+
+To run the basic demo code you'll first need to train a network model. After this is done, just simply run the demo on the terminal:
+
+```lua
+qlua pascal_voc_2007/demo.lua -expID '<exp_name>'
+```
+
+After running the demo you should see something like this:
 
 ![alt text](data/demo/demo_detections.png "Detections with AlexNet")
 
-To run a more dataset-oriented demo, instead run `examples/demo_db.lua` on the terminal while specifying the dataset of choice:
-
-```lua
--- Pascal VOC 2007
-qlua demo_db.lua -dataset pascal2007
-
--- Pascal VOC 2012
-qlua demo_db.lua -dataset pascal2012
-
--- MSCOCO
-qlua demo_db.lua -dataset mscoco
-```
-
-### Using this package
-
-To use this package simply do 
-```lua
-local fastrcnn = require("fastrcnn")
-```
-This will load a table structure containing all the necessary functions to load/setup, train and test a FRCNN network. The core functions of this package provide scripts to [train](#train) and [test](#test) networks, to detect objects in images by using a [detector](#detector), and some [utility](#utils) functions useful to load and/or create FRCNN models, to load RoI proposals data from `.mat` files, and to visualize detection results with a window frame. 
-
-<a name="train"></a>
-#### train ####
-```lua
-fastrcnn.train(dataset, proposals, model, model_parameters)
-```
-<a name="test"></a>
-#### test ####
-```lua
-fastrcnn.train(dataset, proposals, model, model_parameters)
-```
-<a name="detector"></a>
-#### detector ####
-```lua
-local imdetector = fastrcnn.Detector(dataset, proposals, model, model_parameters)
-```
-<a name="utils"></a>
-#### utils ####
-
-```lua
-local utils = fastrcnn.utils
-```
+> Note: This image was taken from this [repo](https://github.com/mahyarnajibi/fast-rcnn-torch). In the demo script a random image is selected from the test set and displayed. To change the generated image just modify the `-manualSeed` value.
 
 
-### Training and testing a model using the example code
+## License
 
-For training a Fast R-CNN network using the example code provided in `examples/`, you need to download the available pre-trained models, object proposals and the Pascal VOC 2007, 2012 and the MSCOCO datasets. This can be done by executing the following scripts: 
-```lua
--- Download pre-trained models
-th download_pretrained_models.lua
-
--- Download region proposals
-th download_proposals.lua
-
--- Download+setup datasets
-th download_datasets.lua
-```
-#### Train a network
-
-Now you can train a model by calling ```th train.lua```. Also, you should specify the required options appropriately. For a list of complete options run ```th train.lua -help```. 
-
-* You can select one of the following imagenet pre-trained networks for feature extraction: AlexNet, ZeilerNet, VGG (16, 19), ResNet (19, 34, 50, 101, 152, 200), and GoogleNet v3.
-* The models together with text files describing the configuration, loss logs and model parameters of the training procedure will be saved into the specified path (default is `./data/exp`. You can change this directory by passing the `-expDir 'new path to save the experiment'` option. 
-
-#### Test a network (mAP accuracy)
-
-To test a previously trained network's mean average-precision, run the test script using `th test.lua` and define the `-expID`, `-dataset` and `-expDir` (if changed). 
-
-Note: The mAP evaluation/testing script is always done using only a single GPU.
-
-
-### TODO
-
-. ~~ update CMakeList file ~~
-. ~~ add rocks install file ~~
-. update README
-. add multi-gpu functionality to the roipooler
-. augment roi prooposals by offsetting its positions around the original box
-. test voc 2012 and mscoco datasets
-. add nms.c from multipathnet code for faster evaluation
-
-### License
-
-The present code is released under the BSD License (refer to the LICENSE file for more details).
-
-### Acknowledges
-
-This work was developed and inspired by the following repositories: [Fast-RCNN*](https://github.com/rbgirshick/fast-rcnn), [Fast-RCNN for Torch7*](https://github.com/mahyarnajibi/fast-rcnn-torch) and [facebook/multipathnet*](https://github.com/facebookresearch/multipathnet). 
-
-(*all rights reserved to the corresponding authors)
+MIT license (see the LICENSE file)
