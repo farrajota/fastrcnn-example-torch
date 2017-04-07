@@ -7,11 +7,10 @@ require 'cudnn'
 require 'inn'
 
 
-local function CreateModel(nGPU, nClasses, has_bbox_regressor)
+local function CreateModel(nGPU, nClasses)
 
     assert(nGPU)
     assert(nClasses)
-    assert(has_bbox_regressor)
 
     -- load features + model parameters (mean/std,stride/num feats (last conv)/colorspace format)
     local net = torch.load(paths.concat(projectDir,'data/pretrained_models/model_zeilernet.t7'))
@@ -36,7 +35,7 @@ local function CreateModel(nGPU, nClasses, has_bbox_regressor)
         :add(inn.ROIPooling(6,6,1/16))
         :add(nn.View(-1):setNumInputDims(3))
         :add(classifier)
-        :add(utils.model.CreateClassifierBBoxRegressor(4096, nClasses, has_bbox_regressor))
+        :add(utils.model.CreateClassifierBBoxRegressor(4096, nClasses))
 
     return model, model_parameters
 end

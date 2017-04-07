@@ -8,11 +8,10 @@ require 'inn'
 local utils = require 'fastrcnn.utils'
 
 
-local function CreateModel(nGPU, nClasses, has_bbox_regressor, netType)
+local function CreateModel(nGPU, nClasses, netType)
 
     assert(nGPU)
     assert(nClasses)
-    assert(has_bbox_regressor)
     assert(netType)
 
 
@@ -65,7 +64,7 @@ local function CreateModel(nGPU, nClasses, has_bbox_regressor, netType)
         :add(inn.ROIPooling(7,7,1/16))
         :add(nn.View(-1):setNumInputDims(3))
         :add(utils.model.makeDataParallel(classifier, nGPU))
-        :add(utils.model.CreateClassifierBBoxRegressor(4096, nClasses, has_bbox_regressor))
+        :add(utils.model.CreateClassifierBBoxRegressor(4096, nClasses))
 
     return model, model_parameters
 end

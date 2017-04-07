@@ -9,11 +9,10 @@ inn.utils = require 'inn.utils'
 local utils = require 'fastrcnn.utils'
 
 
-local function CreateModel(nGPU, nClasses, has_bbox_regressor)
+local function CreateModel(nGPU, nClasses)
 
     assert(nGPU)
     assert(nClasses)
-    assert(has_bbox_regressor)
 
     -- load features + model parameters (mean/std,stride/num feats (last conv)/colorspace format)
     local net = torch.load(paths.concat(projectDir,'data/pretrained_models/model_googlenet_inceptionv3_cunn.t7')):cuda()
@@ -52,7 +51,7 @@ local function CreateModel(nGPU, nClasses, has_bbox_regressor)
         :add(inn.ROIPooling(7,7,1/37.375))
         :add(nn.View(-1):setNumInputDims(3))
         :add(classifier)
-        :add(utils.model.CreateClassifierBBoxRegressor(4096, nClasses, has_bbox_regressor))
+        :add(utils.model.CreateClassifierBBoxRegressor(4096, nClasses))
 
     return model, model_parameters
 end

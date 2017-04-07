@@ -3,40 +3,55 @@
 ]]
 
 
+--[[
+local ffi = require 'ffi'
 local dbc = require 'dbcollection.manager'
 local string_ascii = require 'dbcollection.utils.string_ascii'
 local ascii2str = string_ascii.convert_ascii_to_str
+local pad = require 'dbcollection.utils.pad'
+local unpad = pad.unpad_list
+--]]
 
 ------------------------------------------------------------------------------------------------------------
 
-local function fetch_data_set(dbloader, set_name)
+local function fetch_data_set(set_name)
+  
+    local dbc = require 'dbcollection.manager'
+    local string_ascii = require 'dbcollection.utils.string_ascii'
+    local ascii2str = string_ascii.convert_ascii_to_str
+    local pad = require 'dbcollection.utils.pad'
+    local unpad = pad.unpad_list
+
+    local dbloader = dbc.load{name='pascal_voc_2007', task='detection_light'}
+  
     local loader = {}
 
     -- get image file path
     loader.getFilename = function(idx)
-        return ascii2str(dbloader:get(set_name, 'image_filenames', idx))[1]
+        local filename = ascii2str(dbloader:get(set_name, 'image_filenames', idx))[1]
+        return paths.concat(dbloader.data_dir, filename)
     end
 
     -- get image ground truth boxes + class labels
     loader.getGTBoxes = function(idx)
-        local size = dataset.data.train.filenameList.objectIDList[idx]:size(1)
+        local objs_ids = unpad(dbloader:get(set_name, 'list_object_ids_per_image', idx):squeeze())
+        if #objs_ids == 0 then
+            return nil
+        end
         local gt_boxes, gt_classes = {}, {}
-        for i=1, size do
-            local objID = dataset.data.train.filenameList.objectIDList[idx][i]
-            if objID == 0 then
-                break
-            end
-            local bbox = dataset.data.train.bbox[dataset.data.train.object[objID][3]]
-            local label = dataset.data.train.object[objID][2]
+        for _, id in ipairs(objs_ids) do
+            local objID = dbloader:object(set_name, id + 1):squeeze()
+            local bbox = dbloader:get(set_name, 'boxes', objID[3]):squeeze()
+            local label = objID[2]
             table.insert(gt_boxes, bbox:totable())
             table.insert(gt_classes, label)
         end
         gt_boxes = torch.FloatTensor(gt_boxes)
         return gt_boxes,gt_classes
-    end,
+    end
 
     -- number of samples
-    loader.nfiles =  dbloader:size(set_name, 'image_filenames')[1],
+    loader.nfiles = dbloader:size(set_name, 'image_filenames')[1]
 
     -- classes
     loader.classLabel = ascii2str(dbloader:get(set_name, 'classes'))
@@ -47,19 +62,17 @@ end
 ------------------------------------------------------------------------------------------------------------
 
 local function loader_train()
-    local dbloader = dbc.load('pascal_voc_2007')
     return {
-        train = fetch_data_set(dbloader, 'trainval'),
-        test = fetch_data_set(dbloader, 'test')
+        train = fetch_data_set('trainval'),
+        test = fetch_data_set('test')
     }
 end
 
 ------------------------------------------------------------------------------------------------------------
 
 local function loader_test()
-    local dbloader = dbc.load{name='pascal_voc_2007', task='no_difficult'}
     return {
-        test = fetch_data_set(dbloader, 'test')
+        test = fetch_data_set('test')
     }
 end
 
@@ -69,9 +82,9 @@ local function data_loader(mode)
     assert(mode)
 
     if mode == 'train' then
-        return loader_train()
+        return function() return loader_train() end
     elseif mode == 'test' then
-        return loader_test()
+        return function() return loader_test() end
     else
         error(('Undefined mode: %s. mode must be either \'train\' or \'test\''):format(mode))
     end
