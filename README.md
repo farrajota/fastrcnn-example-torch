@@ -20,7 +20,7 @@ To use this example code, some packages are required for it to work: `fastrcnn` 
 
 To install the Fast R-CNN package do the following:
 
-- step 1: install all the necessary dependencies.
+- install all the necessary dependencies.
 
 ```bash
 luarocks install tds
@@ -30,7 +30,7 @@ luarocks install matio
 luarocks install torchnet
 ```
 
-- setp 2: download and install the package.
+- download and install the package.
 
 ```bash
 git clone https://github.com/farrajota/fast-rcnn-torch
@@ -43,17 +43,17 @@ cd fast-rcnn-torch && luarocks make rocks/*
 
 To install the dbcollection package do the following:
 
-- step 1: download the git repository to disk.
+- download the git repository to disk.
 ```
 git clone https://github.com/farrajota/dbcollection
 ```
 
-- step 2: install the Python module.
+- install the Python module.
 ```
 cd dbcollection/ && python setup.py install
 ```
 
-- step 3: install the Lua package.
+- install the Lua package.
 ```
 cd APIs/lua && luarocks make
 ```
@@ -106,25 +106,28 @@ dbc.load{name='pascal_voc_2007', data_dir='save/dir/path'}
 
 ## Train and test a model using the example code
 
-This repository contains scripts for training and testing an object detector network using a pre-trained network for feature extraction such as the alexnet or resnet on a dataset.
+This repository contains scripts for training and testing an object detector network using a pre-trained network on ImageNet for feature extraction such as the alexnet or resnet.
 
-There are several options available for configuring the training/testing parameters. See `options.lua` for a complete set of available parameters for training/testing.
+> Note: several options are available for configuring the training/testing parameters (see `options.lua` for a complete set of available parameters).
 
-> Note: For now only the Pascal VOC 2007 dataset is provided. The MS COCO dataset is being prepared for inclusion as well.
+> Note2: For now only the Pascal VOC 2007 dataset is provided. The MS COCO dataset is being prepared for inclusion as well.
 
 ### Training a network
 
-To train a model,  by calling `th pascal_voc_2007/train.lua`. Also, you should specify the required options appropriately. For a list of complete options run `th pascal_voc_2007/train.lua -help`.
+To train a model run `th train.lua`. To change the default settings, use the input arguments of your choice. To see all available option's parameters do `th train.lua --help` or check `options.lua`.
 
 * You can select one of the following imagenet pre-trained networks for feature extraction: AlexNet, ZeilerNet, VGG (16, 19), ResNet (19, 34, 50, 101, 152, 200), and GoogleNet v3.
 
-* Snapshots of the network's training are stored to disk other ifnromation such as the configuration file, loss logs and model parameters of the training procedure (default path is `./data/exp`). You can change this directory by passing the `-expDir`new path to save the experiment option.
+* Snapshots of the network's training procedure are stored to disk other information such as the configuration file, loss logs and model parameters of the training procedure (default path is `./data/exp`). You can change this directory by passing the `-expDir`new path to save the experiment option.
+
 
 ### Testing a network (mAP accuracy)
 
-To test an object detector accuracyrun the test script using `th test.lua` and define the `-expID`, `-dataset` and `-expDir` (if changed) to compute the mean average-precision.
+
+To test a network's accuracy, run `th test.lua` and define the `-expID`, `-dataset` and `-expDir` input options (if changed) to compute the mean average-precision.
 
 > Note: The test script only uses a single GPU.
+
 
 
 ### Running the demo
