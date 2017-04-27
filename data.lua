@@ -3,15 +3,24 @@
 ]]
 
 
-local function fetch_data_set(set_name)
+local dbc = require 'dbcollection.manager'
+local string_ascii = require 'dbcollection.utils.string_ascii'
+local ascii2str = string_ascii.convert_ascii_to_str
+local pad = require 'dbcollection.utils.pad'
+local unpad = pad.unpad_list
 
-    local dbc = require 'dbcollection.manager'
-    local string_ascii = require 'dbcollection.utils.string_ascii'
-    local ascii2str = string_ascii.convert_ascii_to_str
-    local pad = require 'dbcollection.utils.pad'
-    local unpad = pad.unpad_list
+------------------------------------------------------------------------------------------------------------
 
-    local dbloader = dbc.load{name='pascal_voc_2007', task='detection_light'}
+--[[TODO]]
+local function fetch_loader_mscoco(set_name)
+
+end
+
+------------------------------------------------------------------------------------------------------------
+
+local function fetch_loader_pascal(set_name)
+
+    local dbloader = dbc.load{name='pascal_voc_2007', task='detection'}
 
     local loader = {}
 
@@ -52,30 +61,44 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
-local function loader_train()
+local function fetch_loader_dataset(name, set_name)
+    local str = string.lower(name)
+    if str == 'pascal_voc_2007' then
+        return fetch_loader_pascal(set_name)
+    elseif str == 'mscoco' then
+        return fetch_loader_mscoco(set_name)
+    else
+        error(('Invalid dataset: %s. Available options: pascal_voc_2007 or mscoco.'):format(name))
+    end
+    return dbloader
+end
+
+------------------------------------------------------------------------------------------------------------
+
+local function loader_train(name)
     return {
-        train = fetch_data_set('trainval'),
-        test = fetch_data_set('test')
+        train = fetch_loader_dataset(name, 'trainval'),
+        test = fetch_loader_dataset(name, 'test')
     }
 end
 
 ------------------------------------------------------------------------------------------------------------
 
-local function loader_test()
+local function loader_test(name)
     return {
-        test = fetch_data_set('test')
+        test = fetch_loader_dataset(name, 'test')
     }
 end
 
 ------------------------------------------------------------------------------------------------------------
 
-local function data_loader(mode)
+local function data_loader(name, mode)
     assert(mode)
 
     if mode == 'train' then
-        return function() return loader_train() end
+        return function() return loader_train(name) end
     elseif mode == 'test' then
-        return function() return loader_test() end
+        return function() return loader_test(name) end
     else
         error(('Undefined mode: %s. mode must be either \'train\' or \'test\''):format(mode))
     end

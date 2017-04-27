@@ -31,7 +31,7 @@ local opt = opts.parse(arg)
 print('==> (2/5) Load dataset data loader')
 --local data_loader = require 'pascal_voc_2007.data'
 local data_loader = paths.dofile('data.lua')
-local data_gen = data_loader('test')
+local data_gen = data_loader(opt.dataset, 'test')
 
 
 --------------------------------------------------------------------------------

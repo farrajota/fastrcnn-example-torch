@@ -29,7 +29,7 @@ local opt = opts.parse(arg)
 
 print('==> (2/5) Load dataset data loader')
 local data_loader = paths.dofile('data.lua')
-local data_gen = data_loader('train')
+local data_gen = data_loader(opt.dataset, 'train')
 
 
 --------------------------------------------------------------------------------
