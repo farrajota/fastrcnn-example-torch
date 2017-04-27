@@ -13,8 +13,8 @@ local function CreateModel(nGPU, nClasses)
     assert(nClasses)
 
     -- load features + model parameters (mean/std,stride/num feats (last conv)/colorspace format)
-    local net = torch.load(paths.concat(projectDir,'data/pretrained_models/model_zeilernet.t7'))
-    local net = torch.load(paths.concat(projectDir,'data/pretrained_models/parameters_zeilernet.t7'))
+    local net = torch.load('./data/pretrained_models/model_zeilernet.t7')
+    local model_parameters = torch.load('./data/pretrained_models/parameters_zeilernet.t7')
     local features = net.modules[1]
 
     -- setup classifier

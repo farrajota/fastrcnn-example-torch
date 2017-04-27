@@ -27,7 +27,7 @@ local function select_model(name, nGPU, nClasses)
         --model = require 'models.inceptionv3'
         model = paths.dofile('inceptionv3.lua')
     else
-        error('Undefined network type: ' .. name.. '. Available network types: alexnet, vgg, zeiler, resnet, inception.')
+        error('Invalid network type: ' .. name .. '. Available network types: alexnet, vgg, zeiler, resnet, inception.')
     end
 
     return model(nGPU, nClasses, str)

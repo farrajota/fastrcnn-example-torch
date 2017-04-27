@@ -7,7 +7,8 @@ require 'nn'
 require 'cunn'
 require 'cudnn'
 require 'inn'
-local utils = require 'fastrcnn.utils'
+--local utils = require 'fastrcnn.utils'
+local utils = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/utils/init.lua')
 
 
 local function CreateModel(nGPU, nClasses)
@@ -16,10 +17,8 @@ local function CreateModel(nGPU, nClasses)
     assert(nClasses)
 
     -- load features + model parameters (mean/std,stride/num feats (last conv)/colorspace format)
-    --local net = torch.load(paths.concat('data','pretrained_models', 'model_alexnet.t7'))
-    --local model_parameters = torch.load(paths.concat('data','pretrained_models', 'parameters_alexnet.t7'))
-    local net = torch.load(paths.concat('fastrcnn-example','data','pretrained_models', 'model_alexnet.t7'))
-    local model_parameters = torch.load(paths.concat('fastrcnn-example','data','pretrained_models', 'parameters_alexnet.t7'))
+    local net = torch.load('./data/pretrained_models/model_alexnet.t7')
+    local model_parameters = torch.load('./data/pretrained_models/parameters_alexnet.t7')
     local features = net
 
     -- remove all unnecessary layers
@@ -51,7 +50,7 @@ local function CreateModel(nGPU, nClasses)
         :add(classifier)
         :add(utils.model.CreateClassifierBBoxRegressor(4096, nClasses))
 
-    return model, model_parameters
+    return model:cuda(), model_parameters
 end
 
 return CreateModel

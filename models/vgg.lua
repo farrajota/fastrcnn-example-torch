@@ -33,17 +33,17 @@ local function CreateModel(nGPU, nClasses, netType)
 
 
     -- load features + model parameters (mean/std,stride/num feats (last conv)/colorspace format)
-    local features
+    local features, model_parameters
     if netType == 'vgg16' or netType == 'vgg' then
-        local net = torch.load(paths.concat(projectDir,'data/pretrained_models/model_vgg16.t7'))
-        local model_parameters = torch.load(paths.concat(projectDir,'data/pretrained_models/parameters_vgg16.t7'))
+        local net = torch.load('./data/pretrained_models/model_vgg16.t7')
+        model_parameters = torch.load('./data/pretrained_models/parameters_vgg16.t7')
         features = SelectFeatsDisableBackprop(net)
     elseif netType == 'vgg19' then
-        local net = torch.load(paths.concat(projectDir,'data/pretrained_models/model_vgg19.t7'))
-        local model_parameters = torch.load(paths.concat(projectDir,'data/pretrained_models/parameters_vgg19.t7'))
+        local net = torch.load('./data/pretrained_models/model_vgg19.t7')
+        model_parameters = torch.load('./data/pretrained_models/parameters_vgg19.t7')
         features = SelectFeatsDisableBackprop(net)
     else
-        error('Undefined network type: '.. netType..'. Available networks: vgg16, vgg19.')
+        error('Invalid network type: '.. netType..'. Available networks: vgg16, vgg19.')
     end
 
     -- setup classifier
