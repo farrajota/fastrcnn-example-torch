@@ -1,12 +1,12 @@
 --[[
-    Test a Fast-RCNN detector network using the Pascal VOC 2007 dataset.
+    Train a Fast-RCNN detector network using the Pascal VOC 2007/MSCOCO dataset.
 ]]
 
 
 require 'paths'
 require 'torch'
-local fastrcnn = require 'fastrcnn'
---local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
+--local fastrcnn = require 'fastrcnn'
+local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
 
 torch.setdefaulttensortype('torch.FloatTensor')
 
@@ -16,8 +16,8 @@ torch.setdefaulttensortype('torch.FloatTensor')
 --------------------------------------------------------------------------------
 
 print('==> (1/5) Load options')
-local opts = require 'options'
-local opt = opts.parse(arg, 'PascalVOC2007')
+local opts = paths.dofile('options.lua')
+local opt = opts.parse(arg)
 
 
 --------------------------------------------------------------------------------
@@ -28,8 +28,8 @@ local opt = opts.parse(arg, 'PascalVOC2007')
 -- datasets with the fastrcnn package.
 
 print('==> (2/5) Load dataset data loader')
-local data_loader = require 'pascal_voc_2007.data'
-local loader = data_loader('test')
+local data_loader = paths.dofile('data.lua')
+local data_gen = data_loader('train')
 
 
 --------------------------------------------------------------------------------
@@ -37,26 +37,33 @@ local loader = data_loader('test')
 --------------------------------------------------------------------------------
 
 print('==> (3/5) Load roi proposals data')
-local loadRoiDataFn = fastrcnn.utils.load.matlab.single_file
-local rois = {
-    test =  loadRoiDataFn(paths.concat('data','proposals', 'selective_search_data', 'voc_2007_test.mat'))
-}
+local rois_loader = paths.dofile('rois.lua')
+local rois = rois_loader(opt.dataset, 'train')
 
 
 --------------------------------------------------------------------------------
 -- Setup model
 --------------------------------------------------------------------------------
 
-print('==> (4/5) Load model: ' .. paths.concat(opt.savedir, opt.load))
-local model, model_parameters = unpack(torch.load(paths.concat(opt.savedir, opt.load)))
+local model, model_parameters
+if opt.loadModel == '' then
+    print('==> (4/5) Setup model:')
+    --local load_model = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn-example/models/init.lua')
+    --model, model_parameters = load_model(opt.netType, opt.nGPU, 20)
+    local load_model = paths.dofile('model/init.lua')
+    model, model_parameters = load_model(opt.netType, opt.clsType, opt.featID, opt.roi_size, opt.cls_size, opt.nGPU, 20)
+else
+    print('==> (4/5) Load model from file: ')
+    local model_data = torch.load(opt.load)
+    model, model_parameters = model_data.model, model_data.params
+end
 
 
 --------------------------------------------------------------------------------
--- Test detector mAP
+-- Train a  Fast R-CNN detector
 --------------------------------------------------------------------------------
 
-print('==> (5/5) Test Fast-RCNN model')
-opt.model_param = model_parameters
-fastrcnn.test(loader, rois, model, model_parameters, opt)
+print('==> (5/5) Train Fast-RCNN model')
+fastrcnn.train(data_gen, rois, model, model_parameters, opt)
 
 print('Script complete.')

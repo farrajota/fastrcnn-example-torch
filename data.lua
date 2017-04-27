@@ -3,19 +3,8 @@
 ]]
 
 
---[[
-local ffi = require 'ffi'
-local dbc = require 'dbcollection.manager'
-local string_ascii = require 'dbcollection.utils.string_ascii'
-local ascii2str = string_ascii.convert_ascii_to_str
-local pad = require 'dbcollection.utils.pad'
-local unpad = pad.unpad_list
---]]
-
-------------------------------------------------------------------------------------------------------------
-
 local function fetch_data_set(set_name)
-  
+
     local dbc = require 'dbcollection.manager'
     local string_ascii = require 'dbcollection.utils.string_ascii'
     local ascii2str = string_ascii.convert_ascii_to_str
@@ -23,7 +12,7 @@ local function fetch_data_set(set_name)
     local unpad = pad.unpad_list
 
     local dbloader = dbc.load{name='pascal_voc_2007', task='detection_light'}
-  
+
     local loader = {}
 
     -- get image file path
@@ -51,10 +40,12 @@ local function fetch_data_set(set_name)
     end
 
     -- number of samples
-    loader.nfiles = dbloader:size(set_name, 'image_filenames')[1]
+    local nfiles = dbloader:size(set_name, 'image_filenames')[1]
+    loader.nfiles = nfiles
 
     -- classes
-    loader.classLabel = ascii2str(dbloader:get(set_name, 'classes'))
+    local class_names = ascii2str(dbloader:get(set_name, 'classes'))
+    loader.classLabel = class_names
 
     return loader
 end

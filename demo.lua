@@ -1,12 +1,14 @@
 --[[
-    Fast-RCNN demo. Applies detection on an available standalone test image available in the package.
+    Fast-RCNN demo.
+
+    Performs object detection on a single test image (random).
 ]]
 
 
 require 'paths'
 require 'torch'
-local fastrcnn = require 'fastrcnn'
---local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
+--local fastrcnn = require 'fastrcnn'
+local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
 
 torch.setdefaulttensortype('torch.FloatTensor')
 
@@ -15,25 +17,34 @@ torch.setdefaulttensortype('torch.FloatTensor')
 -- Load options
 --------------------------------------------------------------------------------
 
-print('==> (1/6) Load options')
-local opts = require 'options'
-local opt = opts.parse(arg, 'PascalVOC2007')
+print('==> (1/7) Load options')
+local opts = paths.dofile('options.lua')
+--local opts = require 'options'
+local opt = opts.parse(arg)
 
 
 --------------------------------------------------------------------------------
 -- Load/setup model
 --------------------------------------------------------------------------------
 
-local fname = paths.concat(opt.savedir, opt.load)
-print('==> (2/6) Load model: ' .. fname)
-local model, model_parameters = unpack(torch.load(fname))
+print('==> (2/7) Load model: ' .. opt.load)
+local model, model_parameters = unpack(torch.load(opt.load))
+
+
+--------------------------------------------------------------------------------
+-- Load regions-of-interest (RoIs)
+--------------------------------------------------------------------------------
+
+print('==> (3/7) Load roi proposals data')
+local rois_loader = paths.dofile('rois.lua')
+local rois = rois_loader(opt.dataset, 'test')
 
 
 --------------------------------------------------------------------------------
 -- Setup detector class
 --------------------------------------------------------------------------------
 
-print('==> (3/6) Setup detector class')
+print('==> (4/7) Setup detector class')
 local imdetector = fastrcnn.ImageDetector(model, model_parameters, opt) -- single image detector/tester
 
 
@@ -41,11 +52,12 @@ local imdetector = fastrcnn.ImageDetector(model, model_parameters, opt) -- singl
 -- Load image + roi proposals
 --------------------------------------------------------------------------------
 
-print('==> (4/6) Load test image + proposals boxes')
-local data_loader = require 'pascal_voc_2007.data'
-local loader = data_loader('test')
+print('==> (5/7) Load test image + proposals boxes')
+--local data_loader = require 'pascal_voc_2007.data'
+local data_loader = paths.dofile('data.lua')
+local loader = data_loader('test')()
 
-local randIdx = torch.random(1, loader.test.size)
+local randIdx = torch.random(1, loader.test.nfiles)
 local im = image.load(loader.test.getFilename(randIdx), 3, 'float')
 local proposals = rois.test[randIdx]:float()
 
@@ -54,7 +66,7 @@ local proposals = rois.test[randIdx]:float()
 -- Process detection
 --------------------------------------------------------------------------------
 
-print('==> (5/6) Process image detections')
+print('==> (6/7) Process image detections')
 local scores, bboxes = imdetector:detect(im, proposals)
 
 
@@ -62,13 +74,11 @@ local scores, bboxes = imdetector:detect(im, proposals)
 -- Visualize detections
 --------------------------------------------------------------------------------
 
-print('==> (6/6) Visualize detections')
+print('==> (7/7) Visualize detections')
 local threshold = 0.5 -- score threshold for visualization purposes only
 
 -- classes from Pascal used for training the model
-local classes = {'aeroplane','bicycle','bird','boat','bottle','bus','car',
-'cat','chair','cow','diningtable','dog','horse','motorbike',
-'person','pottedplant','sheep','sofa','train','tvmonitor'}
+local classes = loader.test.classLabel
 
 -- visualize results
 fastrcnn.visualize_detections(im, bboxes, scores, threshold, opt.frcnn_test_nms_thresh, classes)
