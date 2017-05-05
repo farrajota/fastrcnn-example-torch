@@ -4,21 +4,49 @@
 
 
 local matio = require 'matio'
-local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
-local loadRoiDataFn = fastrcnn.utils.load.matlab.single_file
+local utils = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/utils/init.lua')
+local loadRoiDataFn = utils.load.matlab.single_file
+local loadRoiDataDirFn = utils.load.matlab.load_dir
 
 ------------------------------------------------------------------------------------------------------------
 
-local function select_rois_pascal_2007(mode)
-    local str = string.lower(name)
+local function preprocess_rois_coco()
+    local cache_dir = paths.concat(projectDir, 'data', 'cache')
+    if not paths.dirp(cache_dir) then
+        print('Creating cache dir: ' .. cache_dir)
+        os.execute('mkdir -p ' .. cache_dir)
+    end
+    local train_cache_fname = paths.concat(cache_dir, 'mscoco_proposals_train.t7')
+    local test_cache_fname = paths.concat(cache_dir, 'mscoco_proposals_val.t7')
+    local tensor_type = 'torch.IntTensor'
+    if not paths.filep(train_cache_fname) then
+        print('Processing COCO train RoI proposals...')
+        local train_rois = loadRoiDataDirFn(paths.concat(projectDir, 'data', 'proposals', 'MCG-COCO-train2014-boxes'), tensor_type)
+        print('Save COCO train RoI proposals to cache: ' .. train_cache_fname)
+        torch.save(train_cache_fname, train_rois)
+    end
+    if not paths.filep(test_cache_fname) then
+        print('Processing COCO val RoI proposals...')
+        local test_rois = loadRoiDataDirFn(paths.concat(projectDir, 'data', 'proposals', 'MCG-COCO-val2014-boxes'), tensor_type)
+        print('Save COCO val RoI proposals to cache: ' .. test_cache_fname)
+        torch.save(test_cache_fname, test_rois)
+    end
+    return train_cache_fname, test_cache_fname
+end
+
+------------------------------------------------------------------------------------------------------------
+
+local function select_rois_mscoco(mode)
+    local train_cache_fname, test_cache_fname = preprocess_rois_coco()
+    local str = string.lower(mode)
     if str == 'train' then
         return  {
-            train = loadRoiDataFn('./data/proposals/selective_search_data/voc_2007_trainval.mat'),
-            test = loadRoiDataFn('./data/proposals/selective_search_data/voc_2007_test.mat')
+            train = torch.load(train_cache_fname),
+            test = torch.load(test_cache_fname)
         }
     elseif str == 'test' then
         return  {
-            test = loadRoiDataFn('./data/proposals/selective_search_data/voc_2007_test.mat')
+            test = torch.load(test_cache_fname)
         }
     else
         error(('Invalid mode: %s. Available modes: train or test.'):format(mode))
@@ -27,17 +55,16 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
---[[TODO]]
-local function select_rois_mscoco(mode)
-    local str = string.lower(name)
+local function select_rois_pascal_2007(mode)
+    local str = string.lower(mode)
     if str == 'train' then
         return  {
-            train = {},
-            test = {}
+            train = loadRoiDataFn(projectDir .. 'data/proposals/selective_search_data/voc_2007_trainval.mat'),
+            test = loadRoiDataFn(projectDir .. 'data/proposals/selective_search_data/voc_2007_test.mat')
         }
     elseif str == 'test' then
         return  {
-            test = {}
+            test = loadRoiDataFn(projectDir .. 'data/proposals/selective_search_data/voc_2007_test.mat')
         }
     else
         error(('Invalid mode: %s. Available modes: train or test.'):format(mode))
@@ -65,7 +92,12 @@ local function load_rois(name, mode)
     assert(name, 'Undefined dataset name: ' .. name)
     assert(mode == 'train' or mode == 'test', ('Invalid mode: %s. Valid modes: train or test.'):format(mode))
 
-    local save_dir = './data/proposals'
+    local save_dir = paths.concat(projectDir, 'data/cache')
+
+    if not paths.dirp(save_dir) then
+        print('Creating cache dir: ' .. save_dir)
+        os.execute('mkdir -p ' .. save_dir)
+    end
 
     local proposals_fname = ('%s/%s_%s.t7'):format(save_dir, name, mode)
 
