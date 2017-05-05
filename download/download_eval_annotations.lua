@@ -5,6 +5,7 @@
 
 require 'paths'
 require 'torch'
+paths.dofile('../projectdir.lua')
 
 
 local cmd = torch.CmdLine()
@@ -13,13 +14,11 @@ cmd:text('Torch-7 Fast-RCNN download+extract annotation files.')
 cmd:text()
 cmd:text(' ---------- General options ------------------------------------')
 cmd:text()
-cmd:option('-save_path',   './data', 'Experiment ID')
+cmd:option('-save_path',  projectDir .. 'data/', 'Experiment ID')
 cmd:text()
 
 local opt = cmd:parse(arg or {})
-local savepath = opt.save_path .. '/eval_annots/'
-
-savepath = '/home/mf/Toolkits/Codigo/git/fastrcnn-example/data/eval_annots/'
+local savepath = paths.concat(opt.save_path, 'coco_eval_annots')
 
 -- create directory if needed
 if not paths.dirp(savepath) then

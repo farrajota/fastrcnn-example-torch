@@ -7,6 +7,7 @@
 
 require 'paths'
 require 'torch'
+paths.dofile('../projectdir.lua')
 
 
 local cmd = torch.CmdLine()
@@ -15,11 +16,11 @@ cmd:text('Torch-7 Fast-RCNN download pretrained models.')
 cmd:text()
 cmd:text(' ---------- General options ------------------------------------')
 cmd:text()
-cmd:option('-save_path',   './data', 'Experiment ID')
+cmd:option('-save_path',  projectDir .. '/data', 'Experiment ID')
 cmd:text()
 
 local opt = cmd:parse(arg or {})
-local savepath = opt.save_path
+local savepath = paths.concat(opt.save_path, 'pretrained_models')
 
 -- create directory if needed
 if not paths.dirp(savepath) then
