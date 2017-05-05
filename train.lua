@@ -9,6 +9,7 @@ require 'torch'
 local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
 
 torch.setdefaulttensortype('torch.FloatTensor')
+paths.dofile('projectdir.lua')
 
 
 --------------------------------------------------------------------------------
@@ -50,8 +51,9 @@ if opt.loadModel == '' then
     print('==> (4/5) Setup model:')
     --local load_model = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn-example/models/init.lua')
     --model, model_parameters = load_model(opt.netType, opt.nGPU, 20)
-    local load_model = paths.dofile('model/init.lua')
-    model, model_parameters = load_model(opt.netType, opt.clsType, opt.featID, opt.roi_size, opt.cls_size, opt.nGPU, 20)
+    local nclasses = (opt.dataset=='mscoco' and 80) or 20
+    local load_model = paths.dofile('models/init.lua')
+    model, model_parameters = load_model(opt.netType, opt.nGPU, nclasses)
 else
     print('==> (4/5) Load model from file: ')
     local model_data = torch.load(opt.load)

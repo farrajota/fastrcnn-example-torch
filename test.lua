@@ -9,6 +9,7 @@ require 'torch'
 local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
 
 torch.setdefaulttensortype('torch.FloatTensor')
+paths.dofile('projectdir.lua')
 
 
 --------------------------------------------------------------------------------
@@ -56,6 +57,20 @@ local model, model_parameters = unpack(torch.load(opt.load))
 --------------------------------------------------------------------------------
 
 print('==> (5/5) Test Fast-RCNN model')
-fastrcnn.test(data_gen, rois, model, model_parameters, opt)
+if opt.frcnn_test_mode == 'voc' then
+    fastrcnn.test(data_gen, rois, model, model_parameters, opt)
+else
+    local annotation_file
+    if opt.dataset == 'pascal_voc_2007' then
+        annotation_file = projectDir ..  '/data/coco_eval_annots/pascal_test2007.json'
+        --annotation_file = '/home/mf/Toolkits/Codigo/git/fastrcnn-example/data/eval_annots/pascal_test2007.json'
+    elseif opt.dataset == 'mscoco' then
+        annotation_file = projectDir ..  '/data/coco_eval_annots/instances_val2014.json'
+        --annotation_file = '/home/mf/Toolkits/Codigo/git/fastrcnn-example/data/eval_annots/instances_val2014.json'
+    else
+        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007 or mscoco'):format(opt.dataset))
+    end
+    fastrcnn.test(data_gen, rois, model, model_parameters, opt, annotation_file)
+end
 
 print('Script complete.')
