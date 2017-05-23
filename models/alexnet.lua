@@ -10,6 +10,7 @@ require 'inn'
 --local utils = require 'fastrcnn.utils'
 local utils = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/utils/init.lua')
 
+------------------------------------------------------------------------------------------------------------
 
 local function CreateModel(nGPU, nClasses)
 
@@ -52,5 +53,7 @@ local function CreateModel(nGPU, nClasses)
 
     return model:cuda(), model_parameters
 end
+
+------------------------------------------------------------------------------------------------------------
 
 return CreateModel

@@ -5,8 +5,10 @@
 require 'nn'
 require 'cudnn'
 require 'inn'
-local utils = require 'fastrcnn.utils'
+--local utils = require 'fastrcnn.utils'
+local utils = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/utils/init.lua')
 
+------------------------------------------------------------------------------------------------------------
 
 local function CreateModel(nGPU, nClasses, netType)
 
@@ -68,5 +70,7 @@ local function CreateModel(nGPU, nClasses, netType)
 
     return model, model_parameters
 end
+
+------------------------------------------------------------------------------------------------------------
 
 return CreateModel

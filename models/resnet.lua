@@ -8,6 +8,7 @@ require 'inn'
 inn.utils = require 'inn.utils'
 local utils = require 'fastrcnn.utils'
 
+------------------------------------------------------------------------------------------------------------
 
 local function CreateModel(nGPU, nClasses, netType)
 
@@ -66,5 +67,7 @@ local function CreateModel(nGPU, nClasses, netType)
 
     return model, model_parameters
 end
+
+------------------------------------------------------------------------------------------------------------
 
 return CreateModel
