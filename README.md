@@ -1,6 +1,6 @@
 # Fast R-CNN example code
 
-This example code showcases the use of the Fast R-CNN package for training and testing a network.
+This example code showcases the use of the Fast R-CNN package for training and testing a network for object detection.
 
 
 ## Installation
@@ -9,7 +9,7 @@ This example code showcases the use of the Fast R-CNN package for training and t
 
 - NVIDIA GPU with compute capability 3.5+ (2GB+ ram)
 - [Torch7](http://torch.ch/docs/getting-started.html)
-- [Fast R-CNN module](https://github.com/farrajota/fast-rcnn-torch)
+- [Fast-RCNN package](https://github.com/farrajota/fast-rcnn-torch)
 - [dbcollection](https://github.com/farrajota/dbcollection)
 
 ### Packages/dependencies installation
@@ -37,7 +37,7 @@ git clone https://github.com/farrajota/fast-rcnn-torch
 cd fast-rcnn-torch && luarocks make rocks/*
 ```
 
-> For more information about the fastrcnn package see [here](https://github.com/farrajota/fast-rcnn-torch).
+> For more information about the `fastrcnn` package see [here](https://github.com/farrajota/fast-rcnn-torch).
 
 #### dbcollection
 
@@ -81,7 +81,7 @@ To download the roi proposals, simply run the following command in the terminal 
 th download/download_roi_proposals.lua
 ```
 
-### Dataset
+### Datasets
 
 To run the example code, the user can let the script handle the data download and setup.
 
@@ -101,7 +101,17 @@ dbc = require 'dbcollection.manager'
 dbc.load{name='pascal_voc_2007', data_dir='save/dir/path'}
 ```
 
-> Note: If no path is provided, the dataset will be stored in the `~/dbcollection/pascal_voc_2007/data/` directory in your home path.
+> Note: If no path is provided, the dataset will be stored in the `~/dbcollection/<dataset_name>/data/` directory in your home path.
+
+#### Available datasets
+
+The following datasets are available for training/testing an object detector using this repo:
+
+- [Pascal VOC 2007](http://host.robots.ox.ac.uk/pascal/VOC/voc2007/index.html)
+- [Pascal VOC 2012](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/index.html)
+- [Microsoft COCO](http://mscoco.org/)
+
+> Note: For a list of all available datasets fro train/test check `options.lua`.
 
 
 ## Train and test a model using the example code
@@ -126,7 +136,7 @@ To train a model run `th train.lua`. To change the default settings, use the inp
 
 To test a network's accuracy, run `th test.lua` and define the `-expID`, `-dataset` and `-expDir` input options (if changed) to compute the mean average-precision.
 
-> Note: The test script only uses a single GPU.
+> Note: The test script only uses a single GPU for inference.
 
 
 
@@ -135,7 +145,7 @@ To test a network's accuracy, run `th test.lua` and define the `-expID`, `-datas
 To run the basic demo code you'll first need to train a network model. After this is done, just simply run the demo on the terminal:
 
 ```lua
-qlua pascal_voc_2007/demo.lua -expID '<exp_name>'
+qlua demo.lua -expID <exp_name> -dataset <dataset_name>
 ```
 
 After running the demo you should see something like this:
@@ -145,6 +155,6 @@ After running the demo you should see something like this:
 > Note: This image was taken from this [repo](https://github.com/mahyarnajibi/fast-rcnn-torch). In the demo script a random image is selected from the test set and displayed. To change the generated image just modify the `-manualSeed` value.
 
 
-## License
+# License
 
 MIT license (see the LICENSE file)
