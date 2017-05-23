@@ -19,7 +19,6 @@ torch.setdefaulttensortype('torch.FloatTensor')
 
 print('==> (1/7) Load options')
 local opts = paths.dofile('options.lua')
---local opts = require 'options'
 local opt = opts.parse(arg)
 
 
@@ -53,7 +52,6 @@ local imdetector = fastrcnn.ImageDetector(model, model_parameters, opt) -- singl
 --------------------------------------------------------------------------------
 
 print('==> (5/7) Load test image + proposals boxes')
---local data_loader = require 'pascal_voc_2007.data'
 local data_loader = paths.dofile('data.lua')
 local loader = data_loader(opt.dataset, 'test')()
 

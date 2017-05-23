@@ -18,7 +18,6 @@ paths.dofile('projectdir.lua')
 
 print('==> (1/5) Load options')
 local opts = paths.dofile('options.lua')
---local opts = require 'options'
 local opt = opts.parse(arg)
 
 
@@ -30,7 +29,6 @@ local opt = opts.parse(arg)
 -- datasets with the fastrcnn package.
 
 print('==> (2/5) Load dataset data loader')
---local data_loader = require 'pascal_voc_2007.data'
 local data_loader = paths.dofile('data.lua')
 local data_gen = data_loader(opt.dataset, 'test')
 
@@ -63,12 +61,14 @@ else
     local annotation_file
     if opt.dataset == 'pascal_voc_2007' then
         annotation_file = projectDir ..  '/data/coco_eval_annots/pascal_test2007.json'
-        --annotation_file = '/home/mf/Toolkits/Codigo/git/fastrcnn-example/data/eval_annots/pascal_test2007.json'
+    elseif opt.dataset == 'pascal_voc_2012' then
+        annotation_file = projectDir ..  '/data/coco_eval_annots/pascal_val2012.json'
+    elseif opt.dataset == 'pascal_voc_2007_2012' then
+        annotation_file = projectDir ..  '/data/coco_eval_annots/pascal_test2007.json'
     elseif opt.dataset == 'mscoco' then
         annotation_file = projectDir ..  '/data/coco_eval_annots/instances_val2014.json'
-        --annotation_file = '/home/mf/Toolkits/Codigo/git/fastrcnn-example/data/eval_annots/instances_val2014.json'
     else
-        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007 or mscoco'):format(opt.dataset))
+        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or mscoco'):format(name))
     end
     fastrcnn.test(data_gen, rois, model, model_parameters, opt, annotation_file)
 end

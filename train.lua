@@ -49,8 +49,6 @@ local rois = rois_loader(opt.dataset, 'train')
 local model, model_parameters
 if opt.loadModel == '' then
     print('==> (4/5) Setup model:')
-    --local load_model = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn-example/models/init.lua')
-    --model, model_parameters = load_model(opt.netType, opt.nGPU, 20)
     local nclasses = (opt.dataset=='mscoco' and 80) or 20
     local load_model = paths.dofile('models/init.lua')
     model, model_parameters = load_model(opt.netType, opt.nGPU, nclasses)
