@@ -2,6 +2,8 @@
     Fast-RCNN Torch7 implementation. Options script.
 ]]
 
+projectDir = projectDir or './'
+
 local options = {}
 
 function options.parse(arg)
@@ -13,9 +15,10 @@ function options.parse(arg)
     cmd:text()
     cmd:text(' ---------- General options ------------------------------------')
     cmd:text()
-    cmd:option('-expID', 'alexnet_frcnn', 'Experiment ID')
-    cmd:option('-expDir',   './data/exp',  'Experiments directory')
-    cmd:option('-dataset',     'pascal_voc_2007', 'Dataset to use for train/test/demo. Options: pascal_voc_2007, mscoco')
+    cmd:option('-expID',      'alexnet_frcnn', 'Experiment ID')
+    cmd:option('-expDir',   projectDir .. 'data/exp',  'Experiments directory')
+    cmd:option('-dataset',  'pascal_voc_2007', 'Dataset to use for train/test/demo. Options: ' ..
+                                               'pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or mscoco.')
     cmd:option('-manualSeed',          2, 'Manually set RNG seed')
     cmd:option('-GPU',                 1, 'Default preferred GPU, if set to -1: no GPU')
     cmd:option('-nGPU',                1, 'Number of GPUs to use by default')
@@ -30,6 +33,7 @@ function options.parse(arg)
                                                    'resnet-101 | resnet-152 | resnet-200 | zeiler | googlenetv3.')
     cmd:option('-loadModel',          '', 'Provide the path of a previously trained model')
     cmd:option('-continue',      "false", 'Pick up where an experiment left off')
+    cmd:option('-clear_buffers', 'false', 'Empty network\'s buffers (gradInput, etc.) before saving the network to disk (if true).')
     cmd:text()
     cmd:text(' ---------- Hyperparameter options -----------------------------')
     cmd:text()
@@ -42,7 +46,7 @@ function options.parse(arg)
     cmd:text()
     cmd:text(' ---------- Training options -----------------------------------')
     cmd:text()
-    cmd:option('-trainIters',      1000, 'Number of train iterations per epoch')
+    cmd:option('-trainIters',     1000, 'Number of train iterations per epoch')
     cmd:option('-epochStart',        1, 'Manual epoch number (useful on restarts)')
     cmd:option('-schedule', "{{30,1e-3,5e-4},{10,1e-4,5e-4}}", 'Optimization schedule. Overrides the previous configs if not empty.')
     cmd:option('-snapshot',          10, 'How often to take a snapshot of the model (0 = never)')
@@ -74,9 +78,10 @@ function options.parse(arg)
     cmd:text()
     cmd:option('-frcnn_test_scales',      600, 'Image scales -- the short edge of input image.')
     cmd:option('-frcnn_test_max_size',   1000, 'Max pixel size of a scaled input image.')
+    cmd:option('-frcnn_test_max_boxes_split',  2000, 'Split boxes proposals into segments of maximum size \'N\' (helps in out-of-memory situations)')
     cmd:option('-frcnn_test_nms_thresh',  0.3, 'Non-Maximum suppression threshold.')
     cmd:option('-frcnn_test_bbox_voting_nms_thresh',  0.5, 'Bbox voting Non-Maximum suppression threshold.')
-    cmd:option('-frcnn_test_mode',      "voc", 'mAP testing format voc, coco')
+    cmd:option('-frcnn_test_mode',      "coco", 'mAP testing format: voc or coco.')
     cmd:text()
     cmd:text(' ---------- FRCNN data augment options --------------------------------------')
     cmd:text()
@@ -107,7 +112,7 @@ function options.parse(arg)
     end
     ---------------------------------------------------------------------------------------------------
     local function Str2TableFn(input) -- convert a string into a table
-        local json = require 'rapidjson'
+        local json = require 'json'
         -- replace '{' and '}' by '[' and '], respectively
         input = input:gsub("%{","[")
         input = input:gsub("%}","]")
