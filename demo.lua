@@ -7,8 +7,7 @@
 
 require 'paths'
 require 'torch'
---local fastrcnn = require 'fastrcnn'
-local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
+local fastrcnn = require 'fastrcnn'
 
 torch.setdefaulttensortype('torch.FloatTensor')
 

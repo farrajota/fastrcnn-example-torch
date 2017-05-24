@@ -2,6 +2,7 @@
     Resnet (18, 32, 50, 101, 152, 200) FRCNN model.
 ]]
 
+
 require 'nn'
 require 'cudnn'
 require 'inn'

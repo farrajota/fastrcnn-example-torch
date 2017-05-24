@@ -4,7 +4,7 @@
 
 
 local matio = require 'matio'
-local utils = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/utils/init.lua')
+local utils = require 'fastrcnn.utils'
 local loadRoiDataFn = utils.load.matlab.single_file
 local loadRoiDataDirFn = utils.load.matlab.load_dir
 

@@ -5,8 +5,7 @@
 
 require 'paths'
 require 'torch'
---local fastrcnn = require 'fastrcnn'
-local fastrcnn = paths.dofile('/home/mf/Toolkits/Codigo/git/fastrcnn/init.lua')
+local fastrcnn = require 'fastrcnn'
 
 torch.setdefaulttensortype('torch.FloatTensor')
 paths.dofile('projectdir.lua')
@@ -70,6 +69,7 @@ else
     else
         error(('Invalid dataset: %s. Available datasets: pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or mscoco'):format(name))
     end
+
     fastrcnn.test(data_gen, rois, model, model_parameters, opt, annotation_file)
 end
 
