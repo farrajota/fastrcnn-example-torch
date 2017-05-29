@@ -45,7 +45,7 @@ To install the dbcollection package do the following:
 
 - download the git repository to disk.
 ```
-git clone https://github.com/farrajota/dbcollection
+git clone --recursive https://github.com/farrajota/dbcollection
 ```
 
 - install the Python module.
@@ -60,6 +60,16 @@ cd APIs/lua && luarocks make
 
 > For more information about the dbcollection package see [here](https://github.com/farrajota/dbcollection).
 
+
+# Usage
+
+To start using the code, clone this repo to your home directory:
+
+```
+git clone https://github.com/farrajota/fastrcnn-example-torch
+```
+
+If you clone the repo into a different directory, please make sure you modify `projectdir.lua` and point to the new path before using the code.
 
 ## Data setup
 
