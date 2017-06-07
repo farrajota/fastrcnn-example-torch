@@ -145,8 +145,6 @@ The following datasets are available for training/testing an object detector usi
 This repository contains scripts for training and testing an object detector network using a pre-trained network on ImageNet for feature extraction such as the alexnet or resnet.
 
 > Note: several options are available for configuring the training/testing parameters (see `options.lua` for a complete set of available parameters).
->
-> For now only the Pascal VOC 2007 dataset is provided. The MS COCO dataset is being prepared for inclusion as well.
 
 
 ### Training a network
