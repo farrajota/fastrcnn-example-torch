@@ -43,14 +43,14 @@ cd fast-rcnn-torch && luarocks make rocks/*
 
 To install the dbcollection package do the following:
 
-- download the git repository to disk.
-```
-git clone --recursive https://github.com/farrajota/dbcollection
-```
-
 - install the Python module.
 ```
-cd dbcollection/ && python setup.py install
+pip install dbcollection
+```
+
+- download the git repository to disk.
+```
+git clone https://github.com/farrajota/dbcollection
 ```
 
 - install the Lua package.
@@ -145,8 +145,9 @@ The following datasets are available for training/testing an object detector usi
 This repository contains scripts for training and testing an object detector network using a pre-trained network on ImageNet for feature extraction such as the alexnet or resnet.
 
 > Note: several options are available for configuring the training/testing parameters (see `options.lua` for a complete set of available parameters).
+>
+> For now only the Pascal VOC 2007 dataset is provided. The MS COCO dataset is being prepared for inclusion as well.
 
-> Note2: For now only the Pascal VOC 2007 dataset is provided. The MS COCO dataset is being prepared for inclusion as well.
 
 ### Training a network
 
@@ -162,9 +163,16 @@ To train a model run `th train.lua`. To change the default settings, use the inp
 
 To test a network's accuracy, run `th test.lua` and define the `-expID`, `-dataset` and `-expDir` input options (if changed) to compute the mean average-precision.
 
-> Note: The test script only uses a single GPU for inference.
+> Note: Network evaluation (test) only uses a single GPU for inference.
 
 
+### Scripts
+
+In the `scripts/` folder there are several pre-configured example scripts for training and testing a network. To run a script just call them  like this:
+
+```
+th scripts/train_test_alexnet_voc2007.lua
+```
 
 ### Running the demo
 
