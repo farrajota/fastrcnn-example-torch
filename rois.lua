@@ -17,8 +17,8 @@ local function preprocess_rois_coco()
         os.execute('mkdir -p ' .. cache_dir)
     end
 
-    local train_cache_fname = paths.concat(cache_dir, 'mscoco_proposals_train.t7')
-    local test_cache_fname = paths.concat(cache_dir, 'mscoco_proposals_val.t7')
+    local train_cache_fname = paths.concat(cache_dir, 'coco_proposals_train.t7')
+    local test_cache_fname = paths.concat(cache_dir, 'coco_proposals_val.t7')
     local tensor_type = 'torch.IntTensor'
 
     if not paths.filep(train_cache_fname) then
@@ -39,7 +39,7 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
-local function select_rois_mscoco(mode)
+local function select_rois_coco(mode)
     local train_cache_fname, test_cache_fname = preprocess_rois_coco()
     local str = string.lower(mode)
     if str == 'train' then
@@ -125,10 +125,10 @@ local function select_rois_dataset(name, mode)
         return select_rois_pascal_2012(mode)
     elseif str == 'pascal_voc_2007_2012' then
         return select_rois_pascal_2007_2012(mode)
-    elseif str == 'mscoco' then
-        return select_rois_mscoco(mode)
+    elseif str == 'coco' then
+        return select_rois_coco(mode)
     else
-        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or mscoco'):format(name))
+        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or coco'):format(name))
     end
 end
 

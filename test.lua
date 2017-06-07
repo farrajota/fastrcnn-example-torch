@@ -64,10 +64,10 @@ else
         annotation_file = projectDir ..  '/data/coco_eval_annots/pascal_val2012.json'
     elseif opt.dataset == 'pascal_voc_2007_2012' then
         annotation_file = projectDir ..  '/data/coco_eval_annots/pascal_test2007.json'
-    elseif opt.dataset == 'mscoco' then
+    elseif opt.dataset == 'coco' then
         annotation_file = projectDir ..  '/data/coco_eval_annots/instances_val2014.json'
     else
-        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or mscoco'):format(name))
+        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or coco'):format(name))
     end
 
     fastrcnn.test(data_gen, rois, model, model_parameters, opt, annotation_file)

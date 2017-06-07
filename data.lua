@@ -13,10 +13,10 @@ local function get_db_loader(name)
         dbloader = dbc.load{name='pascal_voc_2007', task='detection_d'}
     elseif str == 'pascal_voc_2012' then
         dbloader = dbc.load{name='pascal_voc_2012', task='detection_d'}
-    elseif str == 'mscoco' then
-        dbloader = dbc.load{name='mscoco', task='detection_2015_d'}
+    elseif str == 'coco' then
+        dbloader = dbc.load{name='coco', task='detection_2015_d'}
     else
-        error(('Undefined dataset: %s. Available options: pascal_voc_2007 or mscoco.'):format(name))
+        error(('Undefined dataset: %s. Available options: pascal_voc_2007 or coco.'):format(name))
     end
     return dbloader
 end
@@ -148,7 +148,7 @@ end
 
 ------------------------------------------------------------------------------------------------------------
 
-local function fetch_loader_mscoco(set_name)
+local function fetch_loader_coco(set_name)
 
     local string_ascii = require 'dbcollection.utils.string_ascii'
     local ascii2str = string_ascii.convert_ascii_to_str
@@ -156,7 +156,7 @@ local function fetch_loader_mscoco(set_name)
     local unpad = pad.unpad_list
 
     -- get dataset loader
-    local dbloader = get_db_loader('mscoco')
+    local dbloader = get_db_loader('coco')
 
     local loader = {}
 
@@ -279,14 +279,14 @@ local function fetch_loader_dataset(name, set_name)
         else
             return fetch_loader_pascal_2007_2012('test')
         end
-    elseif str == 'mscoco' then
+    elseif str == 'coco' then
         if set_name == 'test' then
-            return fetch_loader_mscoco('val')
+            return fetch_loader_coco('val')
         else
-            return fetch_loader_mscoco('train')
+            return fetch_loader_coco('train')
         end
     else
-        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or mscoco'):format(name))
+        error(('Invalid dataset: %s. Available datasets: pascal_voc_2007, pascal_voc_2012, pascal_voc_2007_2012 or coco'):format(name))
     end
     return dbloader
 end

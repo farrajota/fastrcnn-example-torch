@@ -1,5 +1,5 @@
 --[[
-    Train a Fast-RCNN detector network using the Pascal VOC 2007/MSCOCO dataset.
+    Train a Fast-RCNN detector network using the Pascal VOC 2007/coco dataset.
 ]]
 
 
@@ -48,7 +48,7 @@ local rois = rois_loader(opt.dataset, 'train')
 local model, model_parameters
 if opt.loadModel == '' then
     print('==> (4/5) Setup model:')
-    local nclasses = (opt.dataset=='mscoco' and 80) or 20
+    local nclasses = (opt.dataset=='coco' and 80) or 20
     local load_model = paths.dofile('models/init.lua')
     model, model_parameters = load_model(opt.netType, opt.nGPU, nclasses)
 else
