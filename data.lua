@@ -6,7 +6,7 @@
 ------------------------------------------------------------------------------------------------------------
 
 local function get_db_loader(name)
-    local dbc = require 'dbcollection.manager'
+    local dbc = require 'dbcollection'
     local dbloader
     local str = string.lower(name)
     if str == 'pascal_voc_2007' then
