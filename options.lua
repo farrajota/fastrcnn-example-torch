@@ -22,6 +22,7 @@ function options.parse(arg)
     cmd:option('-manualSeed',          2, 'Manually set RNG seed')
     cmd:option('-GPU',                 1, 'Default preferred GPU, if set to -1: no GPU')
     cmd:option('-nGPU',                1, 'Number of GPUs to use by default')
+    cmd:option('-disable_cudnn', "false", 'Force disable cudnn backend if available.')
     cmd:option('-nThreads',            4, 'Number of data loading threads')
     cmd:option('-verbose',        "true", 'Output messages on screen.')
     cmd:option('-progressbar',    "false", 'Display batch messages using a progress bar if true, else display a more verbose text info.')
@@ -122,6 +123,8 @@ function options.parse(arg)
     opt.expDir = paths.concat(opt.expDir, opt.dataset or 'db')
     opt.savedir = paths.concat(opt.expDir, opt.expID)
     opt.load = (opt.loadModel and opt.loadModel ~= '') or paths.concat(opt.savedir, 'model_final.t7')
+
+    opt.disable_cudnn = ConvertString2Boolean(opt.disable_cudnn)
 
     -- check if some booleans were inserted as strings. If so, convert the string to boolean type
     opt.continue = ConvertString2Boolean(opt.continue)
