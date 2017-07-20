@@ -10,11 +10,11 @@ local function get_db_loader(name)
     local dbloader
     local str = string.lower(name)
     if str == 'pascal_voc_2007' then
-        dbloader = dbc.load{name='pascal_voc_2007', task='detection_d'}
+        dbloader = dbc.load{name='pascal_voc_2007', task='detection'}
     elseif str == 'pascal_voc_2012' then
-        dbloader = dbc.load{name='pascal_voc_2012', task='detection_d'}
+        dbloader = dbc.load{name='pascal_voc_2012', task='detection'}
     elseif str == 'coco' then
-        dbloader = dbc.load{name='coco', task='detection_2015_d'}
+        dbloader = dbc.load{name='coco', task='detection_2015'}
     else
         error(('Undefined dataset: %s. Available options: pascal_voc_2007 or coco.'):format(name))
     end
