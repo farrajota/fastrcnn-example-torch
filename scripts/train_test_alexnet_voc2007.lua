@@ -50,7 +50,8 @@ local info = {
     frcnn_test_scales = 600,
     frcnn_test_max_size = 1000,
     frcnn_test_nms_thresh = 0.3,
-    frcnn_test_mode = 'coco'
+    frcnn_test_mode = 'voc',
+    frcnn_test_use_cache = 'false'
 }
 
 -- concatenate options fields to a string

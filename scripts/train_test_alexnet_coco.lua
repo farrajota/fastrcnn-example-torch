@@ -26,9 +26,9 @@ local info = {
     -- train options
     optMethod = 'sgd',
     nThreads = 4,
-    trainIters = 10,
+    trainIters = 5000,
     snapshot = 10,
-    schedule = "{{40,1e-3,5e-4},{10,1e-4,5e-4}}",
+    schedule = "{{50,1e-3,5e-4},{25,1e-4,5e-4}}",
     testInter = 'false',
     snapshot = 10,
     nGPU = 1,
@@ -50,7 +50,8 @@ local info = {
     frcnn_test_scales = 600,
     frcnn_test_max_size = 1000,
     frcnn_test_nms_thresh = 0.3,
-    frcnn_test_mode = 'coco'
+    frcnn_test_mode = 'coco',
+    frcnn_test_use_cache = 'false'
 }
 
 -- concatenate options fields to a string
