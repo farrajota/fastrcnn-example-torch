@@ -37,7 +37,7 @@ local function fetch_loader_pascal_2007(set_name)
 
     -- get image file path
     loader.getFilename = function(idx)
-        local filename = ascii2str(dbloader:get(set_name, 'image_filenames', idx))[1]
+        local filename = ascii2str(dbloader:get(set_name, 'image_filenames', idx))
         return paths.concat(dbloader.data_dir, filename)
     end
 
@@ -102,7 +102,7 @@ local function fetch_loader_pascal_2012(set_name)
 
     -- get image file path
     loader.getFilename = function(idx)
-        local filename = ascii2str(dbloader:get(set_name, 'image_filenames', idx))[1]
+        local filename = ascii2str(dbloader:get(set_name, 'image_filenames', idx))
         return paths.concat(dbloader.data_dir, filename)
     end
 
@@ -167,7 +167,7 @@ local function fetch_loader_coco(set_name)
 
     -- get image file path
     loader.getFilename = function(idx)
-        local filename = ascii2str(dbloader:get(set_name, 'image_filenames', idx))[1]
+        local filename = ascii2str(dbloader:get(set_name, 'image_filenames', idx))
         return paths.concat(dbloader.data_dir, filename)
     end
 
