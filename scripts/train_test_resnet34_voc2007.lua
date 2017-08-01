@@ -66,4 +66,4 @@ print('Input options: ' .. str_args)
 os.execute(('th train.lua %s'):format(str_args))
 
 -- benchmark network
-os.execute(('th test.lua '):format(str_args))
+os.execute(('th test.lua %s'):format(str_args))

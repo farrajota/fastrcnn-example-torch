@@ -28,7 +28,7 @@ local info = {
     nThreads = 4,
     trainIters = 5000,
     snapshot = 10,
-    schedule = "{{40,1e-3,5e-4},{10,1e-4,5e-4}}",
+    schedule = "{{50,1e-3,5e-4},{25,1e-4,5e-4}}",
     testInter = 'false',
     snapshot = 10,
     nGPU = 1,
@@ -66,4 +66,4 @@ print('Input options: ' .. str_args)
 os.execute(('th train.lua %s'):format(str_args))
 
 -- benchmark network
-os.execute(('th test.lua '):format(str_args))
+os.execute(('th test.lua %s'):format(str_args))
