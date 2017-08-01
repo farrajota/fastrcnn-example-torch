@@ -136,6 +136,9 @@ function options.parse(arg)
     opt.progressbar = ConvertString2Boolean(opt.progressbar)
     opt.printConfusion = ConvertString2Boolean(opt.printConfusion)
 
+    --opt.testInter = ConvertString2Boolean(opt.testInter)
+    opt.frcnn_test_use_cache = ConvertString2Boolean(opt.frcnn_test_use_cache)
+
     -- convert string to table
     opt.schedule = Str2TableFn(opt.schedule)
 
