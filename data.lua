@@ -43,7 +43,7 @@ local function fetch_loader_pascal_2007(set_name)
 
     -- get image ground truth boxes + class labels
     loader.getGTBoxes = function(idx)
-        local objs_ids = unpad(dbloader:get(set_name, 'list_object_ids_per_image', idx):squeeze())
+        local objs_ids = unpad(dbloader:get(set_name, 'list_object_ids_per_image', idx):squeeze(2))
         if #objs_ids == 0 then
             return nil
         end
@@ -108,7 +108,7 @@ local function fetch_loader_pascal_2012(set_name)
 
     -- get image ground truth boxes + class labels
     loader.getGTBoxes = function(idx)
-        local objs_ids = unpad(dbloader:get(set_name, 'list_object_ids_per_image', idx):squeeze())
+        local objs_ids = unpad(dbloader:get(set_name, 'list_object_ids_per_image', idx):squeeze(2))
         if #objs_ids == 0 then
             return nil
         end
@@ -173,7 +173,7 @@ local function fetch_loader_coco(set_name)
 
     -- get image ground truth boxes + class labels
     loader.getGTBoxes = function(idx)
-        local objs_ids = unpad(dbloader:get(set_name, 'list_object_ids_per_image', idx):squeeze())
+        local objs_ids = unpad(dbloader:get(set_name, 'list_object_ids_per_image', idx):squeeze(2))
         if #objs_ids == 0 then
             return nil
         end
