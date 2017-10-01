@@ -44,21 +44,31 @@ cd fast-rcnn-torch && luarocks make rocks/*
 To install the dbcollection package do the following:
 
 - install the Python module.
-```
-pip install dbcollection
-```
 
-- download the git repository to disk.
-```
-git clone https://github.com/farrajota/dbcollection
-```
+    ```
+    pip install dbcollection==0.1.7
+    ```
 
-- install the Lua package.
-```
-cd APIs/lua && luarocks make
-```
+    or
 
-> For more information about the dbcollection package see [here](https://github.com/farrajota/dbcollection).
+    ```
+    conda install -c farrajota dbcollection==0.1.7
+    ```
+
+- install the Lua/Torch7 dbcollection wrapper:
+
+    1. download the Lua/Torch7 git repo to disk.
+
+    ```
+    git clone https://github.com/dbcollection/dbcollection-torch7
+    ```
+
+    2. install the package.
+    ```
+    cd dbcollection-torch7 && luarocks make
+    ```
+
+> For more information about the dbcollection package see [here](https://github.com/dbcollection/dbcollection-torch7).
 
 
 # Usage
