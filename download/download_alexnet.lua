@@ -30,7 +30,7 @@ end
 
 print('==> Downloading Alexnet model... ')
 
-local url = 'http://www.umiacs.umd.edu/~najibi/data/imgnet_models.tar.gz'
+local url = 'https://www.dropbox.com/s/f7fvm4psgl07siv/Alexnet_weights_imagenet.tar.gz?dl=0'
 
 -- file name
 local filename_model = paths.concat(savepath, 'Alexnet_weights_imagenet.tar.gz')
